@@ -2,6 +2,8 @@ import { PokeDataType, PokeNamesType } from "@/types";
 import pocketball from "@/assets/pocketball.svg";
 import Image from "next/image";
 
+const NUM_PER_PAGE = 20;
+
 const getKoName = (names: PokeNamesType[]) => {
   for (let i = 0; i < names.length; i++) {
     const data = names[i];
@@ -15,14 +17,15 @@ const getKoName = (names: PokeNamesType[]) => {
 
   return "데이터 없음";
 };
-async function getData() {
-  const promises = Array.from({ length: 20 }).map((_, idx) =>
+
+function getData() {
+  const promises = Array.from({ length: NUM_PER_PAGE }).map((_, idx) =>
     fetch(`https://pokeapi.co/api/v2/pokemon-species/${idx + 1}`)
       .then((res) => res.json())
       .then((data) => ({ id: data.id, name: getKoName(data.names) }))
   );
-  const res = await Promise.all(promises);
-  return res;
+  // const res = await Promise.all(promises);
+  return Promise.all(promises);
 }
 
 const getImageUrl = (pokemonIndex: number): string =>
